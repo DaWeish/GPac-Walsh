@@ -26,13 +26,20 @@ public class OverSelection implements ParentSelector<GeneticTree> {
     @Override
     public List<Individual<GeneticTree>> selectParents(Population<GeneticTree> population) {
         ArrayList<Individual<GeneticTree>> matingPool = new ArrayList<>(matingPoolSize);
+        List<Individual<GeneticTree>> sortedPopulation = population.getSortedPopulationList();
+        List<Individual<GeneticTree>> weakPopulation = new ArrayList<>();
+
+        int groupIndex = sortedPopulation.size() / 2; // split the population in half
+        for (int i = 0; i < groupIndex; ++i) {
+            weakPopulation.add(sortedPopulation.remove(0));
+        }
 
         for (int i = 0; i < (int)(matingPoolSize * 0.8); ++i) {
-            matingPool.add(population.getFittest());
+            matingPool.add(sortedPopulation.get(random.nextInt(sortedPopulation.size())));
         }
 
         for (int i = 0; i < (int)(matingPoolSize * 0.2); ++i) {
-            matingPool.add(population.getFittest());
+            matingPool.add(weakPopulation.get(random.nextInt(weakPopulation.size())));
         }
 
         return matingPool;

@@ -37,6 +37,13 @@ public class ArrayPopulation<T> implements  Population<T> {
     }
 
     @Override
+    public List<Individual<T>> getSortedPopulationList() {
+        ArrayList<Individual<T>> duplicate = new ArrayList<>(population);
+        Collections.sort(duplicate);
+        return duplicate;
+    }
+
+    @Override
     public Individual<T> getRandom(Random random) {
         return population.get(random.nextInt(population.size()));
     }

@@ -1,5 +1,6 @@
 package edu.mst.cwd8d.evolution.genetics;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -63,6 +64,12 @@ public interface Population<T> extends Iterable<Individual<T>> {
      * @param size target size for the population
      */
     void setTargetSize(int size);
+
+    /**
+     * Returns a sorted list of the population individuals from weakest to strongest
+     * @return a list of size size() sorted in order of fitness
+     */
+    List<Individual<T>> getSortedPopulationList();
 
     /**
      * Gets the target population size
