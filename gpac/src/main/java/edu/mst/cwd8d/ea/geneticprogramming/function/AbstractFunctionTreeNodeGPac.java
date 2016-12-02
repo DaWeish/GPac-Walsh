@@ -8,17 +8,16 @@ import edu.mst.cwd8d.ea.gpac.model.game.GPacStats;
  *
  * Abstract base implementation of the GPacExpressionTreeNode interface for evaluating a GP Tree
  */
-public abstract class AbstractFunctionTreeNodeGPac implements GPacExpressionTreeNode {
+public abstract class AbstractFunctionTreeNodeGPac extends GPacExpressionTreeNode {
     public GPacExpressionTreeNode left;
     public GPacExpressionTreeNode right;
-    public GPacExpressionTreeNode parent;
 
     public AbstractFunctionTreeNodeGPac(GPacExpressionTreeNode parent) {
-        this.parent = parent;
+        super(parent);
     }
 
     public AbstractFunctionTreeNodeGPac(AbstractFunctionTreeNodeGPac node) {
-        this.parent = node.parent;
+        super(node);
         this.left = node.left;
         this.right = node.right;
     }
@@ -32,9 +31,6 @@ public abstract class AbstractFunctionTreeNodeGPac implements GPacExpressionTree
     public GPacExpressionTreeNode getRight() {
         return right;
     }
-
-    @Override
-    public GPacExpressionTreeNode getParent() { return parent; }
 
     @Override
     public boolean terminalNode() {
@@ -52,9 +48,6 @@ public abstract class AbstractFunctionTreeNodeGPac implements GPacExpressionTree
     }
 
     @Override
-    public void setParent(GPacExpressionTreeNode node) { parent = node; }
-
-    @Override
     public abstract GPacExpressionTreeNode copy();
 
     /**
@@ -67,11 +60,7 @@ public abstract class AbstractFunctionTreeNodeGPac implements GPacExpressionTree
 
     @Override
     public double evaluate(GPacStats stats) {
-        if (left != null && right != null) {
-            return calculate(left.evaluate(stats), right.evaluate(stats));
-        } else {
-            System.out.println("One of the leaves to an expression is null");
-            return 0.0;
-        }
+        // assume they are not null to get rid of the if, otherwise we have an issue somewhere else
+        return calculate(left.evaluate(stats), right.evaluate(stats));
     }
 }

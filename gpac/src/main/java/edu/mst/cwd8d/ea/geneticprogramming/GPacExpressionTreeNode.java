@@ -7,26 +7,35 @@ import edu.mst.cwd8d.ea.gpac.model.game.GPacStats;
  *
  * This interface describes operations of a node in an Expression Tree
  */
-public interface GPacExpressionTreeNode {
+public abstract class GPacExpressionTreeNode {
+    private GPacExpressionTreeNode parent;
+
+    public GPacExpressionTreeNode(GPacExpressionTreeNode parent) {
+        this.parent = parent;
+    }
     /**
      * Recursively obtain the value of this node
      * @return the evaluated result of the expression tree
      */
-    double evaluate(GPacStats stats);
+    public abstract double evaluate(GPacStats stats);
 
-    GPacExpressionTreeNode getLeft();
-    GPacExpressionTreeNode getRight();
-    GPacExpressionTreeNode getParent();
+    public abstract GPacExpressionTreeNode getLeft();
+    public abstract GPacExpressionTreeNode getRight();
+    public GPacExpressionTreeNode getParent() {
+        return parent;
+    }
 
-    void setLeft(GPacExpressionTreeNode node);
-    void setRight(GPacExpressionTreeNode node);
-    void setParent(GPacExpressionTreeNode node);
+    public abstract void setLeft(GPacExpressionTreeNode node);
+    public abstract void setRight(GPacExpressionTreeNode node);
+    public void setParent(GPacExpressionTreeNode node) {
+        this.parent = node;
+    }
 
-    boolean terminalNode();
+    public abstract boolean terminalNode();
 
     /**
      * Returns a copy of this GPacExpressionTreeNode
      * @return a copy of this Node
      */
-    GPacExpressionTreeNode copy();
+    public abstract GPacExpressionTreeNode copy();
 }

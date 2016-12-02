@@ -8,15 +8,13 @@ import edu.mst.cwd8d.ea.gpac.model.game.GPacStats;
  *
  * This class is a base class for Terminal nodes in the Exression Tree
  */
-public abstract class AbstractTerminalNodeGPac implements GPacExpressionTreeNode {
-    private GPacExpressionTreeNode parent;
-
+public abstract class AbstractTerminalNodeGPac extends GPacExpressionTreeNode {
     public AbstractTerminalNodeGPac(GPacExpressionTreeNode parent) {
-        this.parent = parent;
+        super(parent);
     }
 
     public AbstractTerminalNodeGPac(AbstractTerminalNodeGPac other) {
-        this.parent = other.parent;
+        super(other);
     }
 
     @Override
@@ -33,20 +31,10 @@ public abstract class AbstractTerminalNodeGPac implements GPacExpressionTreeNode
     }
 
     @Override
-    public GPacExpressionTreeNode getParent() {
-        return parent;
-    }
-
-    @Override
     public void setLeft(GPacExpressionTreeNode node) {}
 
     @Override
     public void setRight(GPacExpressionTreeNode node) {}
-
-    @Override
-    public void setParent(GPacExpressionTreeNode node) {
-        this.parent = node;
-    }
 
     @Override
     public boolean terminalNode() {
