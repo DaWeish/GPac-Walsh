@@ -43,7 +43,9 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
     private final GeneMutator<T> geneMutator;
     private final SurvivalEvaluator<T> survivalEvaluator;
     private final SimulationTerminator simulationTerminator;
-    private final Population<T> population;
+    private final Population<T> attackerPopulation;
+    private final Population<T> defenderPopulation;
+
     private final Random random;
 
     public CompCoEvolutionSimulator(FitnessEvaluator<T> trainingFitnessEvaluator,
@@ -53,7 +55,8 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
                               GeneMutator<T> geneMutator,
                               SurvivalEvaluator<T> survivalEvaluator,
                               SimulationTerminator simulationTerminator,
-                              Population<T> population,
+                              Population<T> attackerPopulation,
+                              Population<T> defenderPopulation,
                               Random random) {
         this.trainingFitnessEvaluator = trainingFitnessEvaluator;
         this.geneSeeder = geneSeeder;
@@ -62,33 +65,44 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
         this.geneMutator = geneMutator;
         this.survivalEvaluator = survivalEvaluator;
         this.simulationTerminator = simulationTerminator;
-        this.population = population;
+        this.attackerPopulation = attackerPopulation;
+        this.defenderPopulation = defenderPopulation;
         this.random = random;
     }
 
+    /**
+     * Returns the attacker population
+     * @return The final attacker population
+     */
     public Population<T> simulate() {
         trainingFitnessEvaluator.reset();
         initializePopulation();
         logOutput();
 
         while (!simulationTerminator.terminateSimulation(false)) {
-            reproduce();
-            survivalEvaluator.trimPopulation(population);
+            reproduce(attackerPopulation);
+            reproduce(defenderPopulation);
+            evaluateFitness(attackerPopulation);
+            evaluateFitness(defenderPopulation);
+            survivalEvaluator.trimPopulation(attackerPopulation);
+            survivalEvaluator.trimPopulation(defenderPopulation);
             logOutput();
         }
 
-        return population;
+        return attackerPopulation;
     }
 
+    public Population<T> getDefenderPopulation() { return defenderPopulation; }
+
     private void logOutput() {
-        long averageFitness = population.totalFitness() / population.size();
+        long averageFitness = attackerPopulation.totalFitness() / attackerPopulation.size();
         outputLog.info(""
                 + trainingFitnessEvaluator.numberEvaluations()
                 + "\t" + averageFitness
-                + "\t" + population.getFittest().getFitness());
+                + "\t" + attackerPopulation.getFittest().getFitness());
     }
 
-    private void reproduce() {
+    private void reproduce(Population<T> population) {
 
         List<Individual<T>> parents = parentSelector.selectParents(population);
         if (parents.size() < 2) {
@@ -112,13 +126,9 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
             childGenes.add(child);
         }
 
-        // Check each child's fitness and add to population
+        // Add each child to population with the minimum fitness
         for (T child : childGenes) {
-            long childFitness = trainingFitnessEvaluator.evaluateFitness(child);
-            population.add(new Individual<>(child, childFitness));
-
-            if (simulationTerminator.terminateSimulation(true))
-                break;
+            population.add(new Individual<>(child, Long.MIN_VALUE));
         }
     }
 

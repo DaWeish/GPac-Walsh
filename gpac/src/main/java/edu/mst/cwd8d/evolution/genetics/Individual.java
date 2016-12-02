@@ -1,22 +1,16 @@
 package edu.mst.cwd8d.evolution.genetics;
 
-import lombok.Value;
-
 /**
  * @author Connor Walsh (cwd8d)
  */
 
-@Value
 public class Individual<T> implements Comparable<Individual<T>> {
-    T genes;
-    long fitness;
+    private T genes;
+    private long fitness;
 
     public Individual(T genes, long fitness) {
         this.genes = genes;
-        if (fitness < 0)
-            this.fitness = 0;
-        else
-            this.fitness = fitness;
+        this.fitness = fitness;
     }
 
     @Override
@@ -27,4 +21,10 @@ public class Individual<T> implements Comparable<Individual<T>> {
         else
             return 1;
     }
+
+    public T getGenes() { return genes; }
+
+    public long getFitness() { return fitness; }
+
+    public void setFitness(long fitness) { this.fitness = fitness; }
 }

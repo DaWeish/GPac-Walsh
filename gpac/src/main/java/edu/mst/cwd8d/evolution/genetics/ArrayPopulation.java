@@ -1,23 +1,23 @@
 package edu.mst.cwd8d.evolution.genetics;
 
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
- * @author Connor Walsh (cwd8d)
- * Abstract base class for a population
- * This class has a messy implementation and should be cleaned up
+ * @author Connor Walsh
+ *
+ * This class implements the Population interface using an ArrayList as the underlying data structure
+ * It makes no effor to keep the individuals in sorted order since their fitness values can be changed
+ * externally
  */
-public class GeneticPopulation<T> implements Population<T> {
-    private final TreeSet<Individual<T>> population;
+public class ArrayPopulation<T> implements  Population<T> {
+    private final ArrayList<Individual<T>> population;
     private int targetSize;
     private int birthRate;
-    private long totalFitness = 0;
 
-    public GeneticPopulation(int targetSize, int birthRate) {
+    public ArrayPopulation(int targetSize, int birthRate) {
         this.targetSize = targetSize;
         this.birthRate = birthRate;
-        population = new TreeSet<>();
+        population = new ArrayList<>();
     }
 
     @Override
@@ -37,24 +37,39 @@ public class GeneticPopulation<T> implements Population<T> {
 
     @Override
     public Individual<T> getFittest() {
-        return population.last();
+        Individual<T> fittest = null;
+
+        for (Individual<T> individual : population) {
+            if (fittest == null) {
+                fittest = individual;
+                continue;
+            }
+
+            if (individual.compareTo(fittest) > 0) {
+                fittest = individual;
+            }
+        }
+        return fittest;
     }
 
     @Override
     public void add(Individual<T> individual) {
-        totalFitness += individual.getFitness();
         population.add(individual);
     }
 
     @Override
     public boolean kill(Individual<T> individual) {
-        totalFitness -= individual.getFitness();
         return population.remove(individual);
     }
 
     @Override
+    public Individual<T> killWeakest() {
+        Collections.sort(population);
+        return population.remove(0);
+    }
+
+    @Override
     public void killAll() {
-        totalFitness = 0;
         population.clear();
     }
 
@@ -65,14 +80,11 @@ public class GeneticPopulation<T> implements Population<T> {
 
     @Override
     public long totalFitness() {
+        long totalFitness = 0;
+        for (Individual<T> individual : population) {
+            totalFitness += individual.getFitness();
+        }
         return totalFitness;
-    }
-
-    @Override
-    public Individual<T> killWeakest() {
-        Individual<T> weakest = population.pollFirst();
-        totalFitness -= weakest.getFitness();
-        return weakest;
     }
 
     @Override
@@ -92,6 +104,6 @@ public class GeneticPopulation<T> implements Population<T> {
 
     @Override
     public Iterator<Individual<T>> iterator() {
-        return population.descendingIterator();
+        return population.listIterator();
     }
 }

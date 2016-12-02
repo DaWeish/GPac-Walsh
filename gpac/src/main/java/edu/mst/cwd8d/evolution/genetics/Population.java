@@ -24,7 +24,7 @@ public interface Population<T> extends Iterable<Individual<T>> {
      * Add the individual to the genepool with a Long.Min_Value as fitness
      * @param individual Genes to add to population
      */
-    boolean add(Individual<T> individual);
+    void add(Individual<T> individual);
 
     /**
      * Remove the genes from the population
