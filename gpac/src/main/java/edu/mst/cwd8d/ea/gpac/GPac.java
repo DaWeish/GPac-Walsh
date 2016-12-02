@@ -7,6 +7,7 @@ import edu.mst.cwd8d.ea.gpac.configuration.GPacConfig;
 import edu.mst.cwd8d.ea.gpac.configuration.GPacConfigProvider;
 import edu.mst.cwd8d.ea.gpac.evolution.GPacFitnessEvaluator;
 import edu.mst.cwd8d.ea.gpac.evolution.GPacSimulationFactory;
+import edu.mst.cwd8d.evolution.CompCoEvolutionSimulator;
 import edu.mst.cwd8d.evolution.EvolutionSimulator;
 import edu.mst.cwd8d.evolution.genetics.Individual;
 import org.apache.log4j.FileAppender;
@@ -39,7 +40,7 @@ public class GPac
         }
         Random random = new Random(seed);
 
-        EvolutionSimulator<GeneticTree> simulator = GPacSimulationFactory.getSimulation(random, experimentConfig, gameConfig);
+        CompCoEvolutionSimulator<GeneticTree> simulator = GPacSimulationFactory.getSimulation(random, experimentConfig, gameConfig);
 
         configureOutputLog("output.log", experimentConfig.getLogFile());
         output.info("Result Log");

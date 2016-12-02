@@ -118,7 +118,14 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
         int samplingNumber = (int)(population.size() * 0.05); // test against 5% of the opposing population
         long fitnessTotal = 0;
         for (int i = 0; i < samplingNumber; ++i) {
-            T challenger = population.getRandom(random).getGenes();
+            Individual<T> ind = population.getRandom(random);
+            if (ind == null) {
+                generalLog.info("The individual was Null!");
+            }
+            T challenger = ind.getGenes();
+            if (challenger == null) {
+                generalLog.info("The individual had null genes!");
+            }
             if (isAttacker) {
                 fitnessTotal += trainingFitnessEvaluator.evaluateFitness(individual, challenger).getLeft();
             } else {
@@ -179,5 +186,7 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
         for (T gene : genes) {
             population.add(new Individual<>(gene, Long.MIN_VALUE));
         }
+
+        generalLog.info("Population size is " + population.size());
     }
 }

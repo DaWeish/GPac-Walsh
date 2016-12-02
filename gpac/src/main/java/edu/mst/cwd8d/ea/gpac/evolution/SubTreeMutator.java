@@ -28,7 +28,7 @@ public class SubTreeMutator implements GeneMutator<GeneticTree> {
 
         double selectionChance = 1.0 / Math.log(gene.getSize());
         GPacExpressionTreeNode mutationPoint =
-                GeneticTree.getRandomNode(gene.getRoot(), selectionChance, random);
+                gene.getRandomNode(gene.getRoot(), selectionChance, random);
 
         if (mutationPoint == null) {
             System.out.println("ERROR! MutationPoint that was found was null!");
@@ -37,9 +37,9 @@ public class SubTreeMutator implements GeneMutator<GeneticTree> {
 
         GPacExpressionTreeNode mutatedTree;
         if (random.nextBoolean()) {
-            mutatedTree = GeneticTree.grow(5, null, random);
+            mutatedTree = gene.grow(5, null, random);
         } else {
-            mutatedTree = GeneticTree.full(5, null, random);
+            mutatedTree = gene.full(5, null, random);
         }
 
         GPacExpressionTreeNode parent = mutationPoint.getParent();

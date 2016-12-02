@@ -29,10 +29,10 @@ public class GPacFitnessEvaluator implements CompetitiveFitnessEvaluator<Genetic
     public GPacFitnessEvaluator(Random random, GPacConfig config, double parsimonyPressure) {
         game = new GPacGame(random, config);
         bestFitness = Long.MIN_VALUE;
-        pacmanController = new GPTreeController();
-        ghost1Controller = new GPTreeController();
-        ghost2Controller = ghost1Controller;
-        ghost3Controller = ghost1Controller;
+        pacmanController = new GPTreeController(0);
+        ghost1Controller = new GPTreeController(1);
+        ghost2Controller = new GPTreeController(2);
+        ghost3Controller = new GPTreeController(3);
         this.parsimonyPressure = parsimonyPressure;
         evaluations = 0;
     }
@@ -47,6 +47,8 @@ public class GPacFitnessEvaluator implements CompetitiveFitnessEvaluator<Genetic
         if (increment) ++evaluations;
         pacmanController.setTree(attackerGene);
         ghost1Controller.setTree(defenderGene);
+        ghost2Controller.setTree(defenderGene);
+        ghost3Controller.setTree(defenderGene);
         long pacmanFitness = game.play(pacmanController, ghost1Controller, ghost2Controller, ghost3Controller);
         long ghostFitness = -pacmanFitness;
         pacmanFitness -= Math.ceil(attackerGene.getSize() * parsimonyPressure);

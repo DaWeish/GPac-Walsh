@@ -4,6 +4,7 @@ import edu.mst.cwd8d.ea.geneticprogramming.GeneticTree;
 import edu.mst.cwd8d.ea.gpac.configuration.ExperimentConfig;
 import edu.mst.cwd8d.ea.gpac.configuration.GPacConfig;
 import edu.mst.cwd8d.evolution.CompCoEvolutionSimulator;
+import edu.mst.cwd8d.evolution.genetics.ArrayPopulation;
 import edu.mst.cwd8d.evolution.genetics.GeneticPopulation;
 import edu.mst.cwd8d.evolution.selection.*;
 import edu.mst.cwd8d.evolution.termination.FitnessEvaluationsTerminator;
@@ -22,11 +23,11 @@ public class GPacSimulationFactory {
         PacmanRampedHalfAndHalfSeeder pacmanSeed = new PacmanRampedHalfAndHalfSeeder(random, config.getMaxTreeDepth());
         GhostRampedHalfAndHalfSeeder ghostSeed = new GhostRampedHalfAndHalfSeeder(random, config.getMaxTreeDepth());
 
-        GeneticPopulation<GeneticTree> pacmanPopulation = new GeneticPopulation<>(
+        ArrayPopulation<GeneticTree> pacmanPopulation = new ArrayPopulation<>(
                 config.getPopulationSize(),
                 config.getBirthRate());
 
-        GeneticPopulation<GeneticTree> ghostPopulation = new GeneticPopulation<>(
+        ArrayPopulation<GeneticTree> ghostPopulation = new ArrayPopulation<>(
                 config.getPopulationSize(),
                 config.getBirthRate());
 

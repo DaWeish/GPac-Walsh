@@ -258,8 +258,9 @@ public class GPacGame {
         /**
          * Calculate the stats and populate a given stats object
          * @param stats stats object to store stats in
+         * @param ghostIndex This is the index of which ghost to calculate stats for (0 = no ghost)
          */
-        public void calculateStats(GPacStats stats) {
+        public void calculateStats(GPacStats stats, int ghostIndex) {
             stats.pacmanNumAdjacentWalls = 0;
             for (GridSquare square : grid.getSquareNeighbors(pacman.getLocation())) {
                 if (!grid.isActive(square)) ++stats.pacmanNumAdjacentWalls;
@@ -286,6 +287,27 @@ public class GPacGame {
                     int check = grid.manhattanDistance(pacman.getLocation(), piece.getLocation());
                     if (check < stats.pacmanToNearestPill) stats.pacmanToNearestPill = check;
                 }
+            }
+
+            switch(ghostIndex) {
+                case 1: {
+                    stats.ghostToPacman = grid.manhattanDistance(ghost1.getLocation(), pacman.getLocation());
+                    stats.ghostToGhost = Math.min(
+                            grid.manhattanDistance(ghost1.getLocation(), ghost2.getLocation()),
+                            grid.manhattanDistance(ghost1.getLocation(), ghost3.getLocation()));
+                } break;
+                case 2: {
+                    stats.ghostToPacman = grid.manhattanDistance(ghost2.getLocation(), pacman.getLocation());
+                    stats.ghostToGhost = Math.min(
+                            grid.manhattanDistance(ghost2.getLocation(), ghost1.getLocation()),
+                            grid.manhattanDistance(ghost2.getLocation(), ghost3.getLocation()));
+                } break;
+                case 3: {
+                    stats.ghostToPacman = grid.manhattanDistance(ghost3.getLocation(), pacman.getLocation());
+                    stats.ghostToGhost = Math.min(
+                            grid.manhattanDistance(ghost3.getLocation(), ghost1.getLocation()),
+                            grid.manhattanDistance(ghost3.getLocation(), ghost2.getLocation()));
+                } break;
             }
         }
     }
@@ -410,6 +432,20 @@ public class GPacGame {
         return actions;
     }
 
+    private List<Pair<Actions, GPacGameState>> ghostActionsAndState(GameGrid.GamePiece ghost) {
+        ArrayList<Pair<Actions, GPacGameState>> result = new ArrayList<>();
+        for (Actions action : ghostActions(ghost)) {
+            GPacGameState state = new GPacGameState(gameState);
+            GameGrid.GamePiece piece;
+            if (ghost == gameState.ghost1) piece = state.ghost1;
+            else if (ghost == gameState.ghost2) piece = state.ghost2;
+            else piece = state.ghost3;
+            state.processPieceAction(piece, action);
+            result.add(new Pair<>(action, state));
+        }
+        return result;
+    }
+
     /**
      * Gets the total time according to the formula
      * @return integer specifying the total number of moves per game of GPac
@@ -450,7 +486,7 @@ public class GPacGame {
 
             @Override
             public List<Pair<Actions, GPacGameState>> getActionsWithState() {
-                return null;
+                return ghostActionsAndState(gameState.ghost1);
             }
         });
 
@@ -462,7 +498,7 @@ public class GPacGame {
 
             @Override
             public List<Pair<Actions, GPacGameState>> getActionsWithState() {
-                return null;
+                return ghostActionsAndState(gameState.ghost2);
             }
         });
 
@@ -474,7 +510,7 @@ public class GPacGame {
 
             @Override
             public List<Pair<Actions, GPacGameState>> getActionsWithState() {
-                return null;
+                return ghostActionsAndState(gameState.ghost3);
             }
         });
     }

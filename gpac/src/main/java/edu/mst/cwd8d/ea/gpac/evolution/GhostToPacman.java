@@ -27,4 +27,9 @@ public class GhostToPacman extends AbstractTerminalNodeGPac {
     public GPacExpressionTreeNode copy() {
         return new GhostToPacman(this);
     }
+
+    @Override
+    public String toString() {
+        return "g2p";
+    }
 }

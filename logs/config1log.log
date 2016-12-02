@@ -1,0 +1,83 @@
+Result Log
+# Experiment Configuration Properties: 
+# Using timer seed: true
+# Random seed of 10
+# Number of runs is 30
+# Number of evaluations is 2000
+# Population size is 30
+# Birth rate is 4
+# Mating pool size is 6
+# Survival selection bracket size is 5
+# Max tree depth is 10
+# Parsimony pressure is 0.01
+# Convergence termination is 10
+# Mutation rate is 0.02
+# Using log file logs/config1log.log
+# Using world file games/config1world.log
+# Using solution file solutions/config1solution.log
+# Using survival selection truncation
+# Using parent selection fitnessProportional
+# Using termination strategy numberOfEvals
+# Chose timer seed to be 1480699873708
+
+# GPac Configuration Properties: 
+# Width is 10
+# Height is 15
+# Fruit score is 10
+# Time multiplier is 2
+# Pill density is 0.5
+# Wall density is 0.25
+# Fruit spawn probability is 0.05
+Run 1
+60	19	63
+128	29	97
+196	24	77
+264	26	84
+332	23	55
+400	23	77
+468	21	55
+536	18	43
+604	21	60
+672	20	70
+740	30	66
+808	26	62
+876	20	65
+944	21	54
+1012	24	75
+1080	22	55
+1148	21	54
+1216	28	79
+1284	22	62
+1352	22	66
+1420	24	53
+1488	22	57
+1556	26	69
+1624	23	64
+1692	28	87
+1760	26	71
+1828	24	48
+1896	25	68
+1964	21	46
+2032	27	56
+
+Run 2
+60	23	79
+128	24	85
+196	23	79
+264	22	77
+332	27	70
+400	23	72
+468	27	66
+536	27	79
+604	38	98
+672	29	52
+740	34	65
+808	30	69
+876	35	63
+944	33	66
+1012	26	74
+1080	30	65
+1148	22	49
+1216	30	69
+1284	28	63
+1352	28	70

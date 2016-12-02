@@ -1,7 +1,6 @@
 package edu.mst.cwd8d.ea.geneticprogramming;
 
 import edu.mst.cwd8d.ea.geneticprogramming.function.*;
-import edu.mst.cwd8d.ea.gpac.evolution.*;
 
 import java.util.Random;
 
@@ -181,6 +180,8 @@ public abstract class GeneticTree {
     public void calculateSize() {
         size = sizeOfExpression(root);
     }
+
+    public abstract GeneticTree copy();
 
     @Override
     public String toString() {

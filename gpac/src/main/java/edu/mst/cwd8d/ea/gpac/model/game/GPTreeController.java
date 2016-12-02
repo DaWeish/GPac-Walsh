@@ -11,9 +11,12 @@ public class GPTreeController implements GPacGame.Controller {
     private GPacGame.Actor actor;
     private GeneticTree tree;
     private GPacStats stats;
+    private int ghostIndex;
 
-    public GPTreeController() {
+
+    public GPTreeController(int ghostIndex) {
         stats = new GPacStats();
+        this.ghostIndex = ghostIndex;
     }
 
     public void setTree(GeneticTree tree) { this.tree = tree; }
@@ -30,7 +33,7 @@ public class GPTreeController implements GPacGame.Controller {
 
         for (Pair<GPacGame.Actions, GPacGame.GPacGameState> pair : actor.getActionsWithState()) {
             // For each action and games state, get the game stats
-            pair.getRight().calculateStats(stats);
+            pair.getRight().calculateStats(stats, ghostIndex);
             double score = tree.getRoot().evaluate(stats);
             if (bestAction == null) {
                 bestScore = score;

@@ -20,15 +20,15 @@ public class SubTreeCrossover implements GeneRecombinator<GeneticTree> {
 
     @Override
     public GeneticTree recombine(GeneticTree leftParent, GeneticTree rightParent) {
-        GeneticTree leftCopy = new GeneticTree(leftParent);
-        GeneticTree rightCopy = new GeneticTree(rightParent);
+        GeneticTree leftCopy = leftParent.copy();
+        GeneticTree rightCopy = rightParent.copy();
 
-        GPacExpressionTreeNode leftCrossover = GeneticTree.getRandomNode(
+        GPacExpressionTreeNode leftCrossover = leftCopy.getRandomNode(
                 leftCopy.getRoot(),
                 Math.log(leftCopy.getSize()) * 2,
                 random);
 
-        GPacExpressionTreeNode rightCrossover = GeneticTree.getRandomNode(
+        GPacExpressionTreeNode rightCrossover = rightCopy.getRandomNode(
                 rightCopy.getRoot(),
                 Math.log(rightCopy.getSize()) * 2,
                 random);
