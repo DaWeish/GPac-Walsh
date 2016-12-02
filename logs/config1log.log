@@ -18,7 +18,7 @@ Result Log
 # Using survival selection truncation
 # Using parent selection fitnessProportional
 # Using termination strategy numberOfEvals
-# Chose timer seed to be 1480702055220
+# Chose timer seed to be 1480710441312
 
 # GPac Configuration Properties: 
 # Width is 10
@@ -29,27 +29,5 @@ Result Log
 # Wall density is 0.25
 # Fruit spawn probability is 0.05
 Run 1
-60	24	85
-128	28	97
-196	28	66
-264	21	71
-332	29	70
-400	29	86
-468	25	67
-536	29	96
-604	21	50
-672	20	96
-740	27	78
-808	22	94
-876	22	75
-944	27	75
-1012	24	88
-1080	25	85
-1148	25	94
-1216	26	65
-1284	23	90
-1352	24	75
-1420	25	70
-1488	27	84
-1556	26	71
-1624	27	63
+60	23	62
+128	28	74
