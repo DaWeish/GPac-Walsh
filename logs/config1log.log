@@ -1,10 +1,10 @@
 Result Log
 # Experiment Configuration Properties: 
-# Using timer seed: true
+# Using timer seed: false
 # Random seed of 10
-# Number of runs is 30
+# Number of runs is 1
 # Number of evaluations is 2000
-# Population size is 30
+# Population size is 20
 # Birth rate is 4
 # Mating pool size is 6
 # Survival selection bracket size is 5
@@ -15,10 +15,11 @@ Result Log
 # Using log file logs/config1log.log
 # Using world file games/config1world.log
 # Using solution file solutions/config1solution.log
+# Using ghost solution file solutions/config1ghostsolution.log
 # Using survival selection truncation
 # Using parent selection fitnessProportional
 # Using termination strategy numberOfEvals
-# Chose timer seed to be 1480710441312
+# Chose timer seed to be 10
 
 # GPac Configuration Properties: 
 # Width is 10
@@ -29,5 +30,46 @@ Result Log
 # Wall density is 0.25
 # Fruit spawn probability is 0.05
 Run 1
-60	23	62
-128	28	74
+40	18	75
+88	23	82
+136	19	41
+184	27	62
+232	22	59
+280	32	93
+328	30	84
+376	20	50
+424	19	49
+472	22	49
+520	27	63
+568	23	57
+616	14	54
+664	19	50
+712	14	43
+760	18	65
+808	17	50
+856	19	89
+904	18	60
+952	4	37
+1000	14	70
+1048	13	71
+1096	4	51
+1144	8	35
+1192	3	33
+1240	11	57
+1288	9	26
+1336	9	29
+1384	9	48
+1432	17	39
+1480	10	29
+1528	13	49
+1576	19	54
+1624	15	40
+1672	10	33
+1720	9	29
+1768	9	35
+1816	18	83
+1864	8	29
+1912	15	52
+1960	11	54
+2008	8	66
+

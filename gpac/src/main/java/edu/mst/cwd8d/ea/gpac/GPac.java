@@ -25,7 +25,8 @@ public class GPac
 {
     private Logger output = LoggerFactory.getLogger("output.log");
     private Logger world = LoggerFactory.getLogger("world.log");
-    private Logger solution = LoggerFactory.getLogger("solution.log");
+    private Logger pacmanSolution = LoggerFactory.getLogger("pacmanSolution.log");
+    private Logger ghostSolution = LoggerFactory.getLogger("ghostSolution.log");
     private Logger log = LoggerFactory.getLogger(GPac.class);
 
     /**
@@ -50,27 +51,29 @@ public class GPac
         output.info(gameConfig.toString());
 
         configureOutputLog("world.log", experimentConfig.getWorldFile());
-        configureOutputLog("solution.log", experimentConfig.getSolutionFile());
+        configureOutputLog("pacmanSolution.log", experimentConfig.getSolutionFile());
+        configureOutputLog("ghostSolution.log", experimentConfig.getGhostSolutionFile());
 
         log.info("Beginning Experiment");
 
-        Individual<GeneticTree> bestIndividual = null;
 
+        Individual<GeneticTree> bestPacman = null;
         int runs = experimentConfig.getNumberRuns();
         for (int i = 1; i <= runs; ++i) {
             output.info("Run " + i);
 
-            Individual<GeneticTree> individual = simulator.simulate().getFittest();
-            log.info("Best individual score for run was " + individual.getFitness());
+            bestPacman = simulator.simulate().getFittest();
+            log.info("Best individual score for run was " + bestPacman.getFitness());
 
-            if (bestIndividual == null || individual.getFitness() > bestIndividual.getFitness()) {
-                bestIndividual = individual;
-            }
             output.info("");
         }
 
+        Individual<GeneticTree> bestGhost = simulator.getDefenderPopulation().getFittest();
+
         GPacFitnessEvaluator evaluator = (GPacFitnessEvaluator) simulator.trainingFitnessEvaluator;
-        solution.info(bestIndividual.getGenes().toString());
+        pacmanSolution.info(bestPacman.getGenes().toString());
+        ghostSolution.info(bestGhost.getGenes().toString());
+
         world.info(evaluator.bestWorld);
     }
 

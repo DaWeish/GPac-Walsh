@@ -78,6 +78,10 @@ public class ExperimentConfig extends AbstractConfig {
         return getString("solutionFile", "defaultSolutionFile");
     }
 
+    public String getGhostSolutionFile() {
+        return getString("ghostSolutionFile", "defaultGhostSolutionFile");
+    }
+
     public String getSurvivalSelection() {
         return getString("survivalSelection", "truncation");
     }
@@ -109,6 +113,7 @@ public class ExperimentConfig extends AbstractConfig {
         sb.append("\n# Using log file ").append(getLogFile());
         sb.append("\n# Using world file ").append(getWorldFile());
         sb.append("\n# Using solution file ").append(getSolutionFile());
+        sb.append("\n# Using ghost solution file ").append(getGhostSolutionFile());
         sb.append("\n# Using survival selection ").append(getSurvivalSelection());
         sb.append("\n# Using parent selection ").append(getParentSelection());
         sb.append("\n# Using termination strategy ").append(getTerminationStrategy());
