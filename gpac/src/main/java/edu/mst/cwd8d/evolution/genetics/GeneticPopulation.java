@@ -1,6 +1,7 @@
 package edu.mst.cwd8d.evolution.genetics;
 
 import java.util.Iterator;
+import java.util.Random;
 import java.util.TreeSet;
 
 /**
@@ -38,6 +39,11 @@ public class GeneticPopulation<T> implements Population<T> {
     @Override
     public Individual<T> getFittest() {
         return population.last();
+    }
+
+    @Override
+    public Individual<T> getRandom(Random random) {
+        return null;
     }
 
     @Override

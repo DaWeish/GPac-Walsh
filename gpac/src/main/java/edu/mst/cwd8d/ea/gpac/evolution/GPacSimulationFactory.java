@@ -3,7 +3,7 @@ package edu.mst.cwd8d.ea.gpac.evolution;
 import edu.mst.cwd8d.ea.geneticprogramming.GeneticTree;
 import edu.mst.cwd8d.ea.gpac.configuration.ExperimentConfig;
 import edu.mst.cwd8d.ea.gpac.configuration.GPacConfig;
-import edu.mst.cwd8d.evolution.EvolutionSimulator;
+import edu.mst.cwd8d.evolution.CompCoEvolutionSimulator;
 import edu.mst.cwd8d.evolution.genetics.GeneticPopulation;
 import edu.mst.cwd8d.evolution.selection.*;
 import edu.mst.cwd8d.evolution.termination.FitnessEvaluationsTerminator;
@@ -16,12 +16,17 @@ import java.util.Random;
  * @author Connor Walsh
  */
 public class GPacSimulationFactory {
-    public static EvolutionSimulator<GeneticTree> getSimulation(Random random, ExperimentConfig config, GPacConfig gameConfig) {
+    public static CompCoEvolutionSimulator<GeneticTree> getSimulation(Random random, ExperimentConfig config, GPacConfig gameConfig) {
         GPacFitnessEvaluator fitnessEvaluator = new GPacFitnessEvaluator(random, gameConfig, config.getParsimonyPressure());
 
-        RampedHalfAndHalfSeeder seeder = new RampedHalfAndHalfSeeder(random, config.getMaxTreeDepth());
+        PacmanRampedHalfAndHalfSeeder pacmanSeed = new PacmanRampedHalfAndHalfSeeder(random, config.getMaxTreeDepth());
+        GhostRampedHalfAndHalfSeeder ghostSeed = new GhostRampedHalfAndHalfSeeder(random, config.getMaxTreeDepth());
 
-        GeneticPopulation<GeneticTree> population = new GeneticPopulation<>(
+        GeneticPopulation<GeneticTree> pacmanPopulation = new GeneticPopulation<>(
+                config.getPopulationSize(),
+                config.getBirthRate());
+
+        GeneticPopulation<GeneticTree> ghostPopulation = new GeneticPopulation<>(
                 config.getPopulationSize(),
                 config.getBirthRate());
 
@@ -58,27 +63,29 @@ public class GPacSimulationFactory {
         SimulationTerminator terminator;
         switch (config.getTerminationStrategy()) {
             case "numberOfEvals":
-                terminator = new FitnessEvaluationsTerminator<GeneticTree>(
+                terminator = new FitnessEvaluationsTerminator<>(
                         fitnessEvaluator,
                         config.getNumberEvaluations());
                 break;
             case "stagnation":
-                terminator = new StagnantBestFitnessTerminator<>(population, config.getConvergenceTermination());
+                terminator = new StagnantBestFitnessTerminator<>(pacmanPopulation, config.getConvergenceTermination());
                 break;
             default:
                 System.out.println("Invalid Termination Strategy!");
                 return null;
         }
 
-        return new EvolutionSimulator<>(
+        return new CompCoEvolutionSimulator<>(
                 fitnessEvaluator,
-                seeder,
+                pacmanSeed,
+                ghostSeed,
                 parentSelector,
                 crossover,
                 mutator,
                 survivalEvaluator,
                 terminator,
-                population,
+                pacmanPopulation,
+                ghostPopulation,
                 random);
     }
 }

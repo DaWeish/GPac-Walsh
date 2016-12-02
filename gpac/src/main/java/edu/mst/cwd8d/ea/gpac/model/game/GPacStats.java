@@ -10,4 +10,6 @@ public class GPacStats {
     public int pacmanToNearestPill;
     public int pacmanNumAdjacentWalls;
     public int pacmanToFruit;
+    public int ghostToPacman;
+    public int ghostToGhost;
 }

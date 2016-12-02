@@ -1,6 +1,7 @@
-package edu.mst.cwd8d.ea.geneticprogramming.terminal;
+package edu.mst.cwd8d.ea.gpac.evolution;
 
 import edu.mst.cwd8d.ea.geneticprogramming.GPacExpressionTreeNode;
+import edu.mst.cwd8d.ea.geneticprogramming.terminal.AbstractTerminalNodeGPac;
 import edu.mst.cwd8d.ea.gpac.model.game.GPacStats;
 
 /**

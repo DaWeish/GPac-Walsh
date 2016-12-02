@@ -1,5 +1,6 @@
 package edu.mst.cwd8d.evolution.termination;
 
+import edu.mst.cwd8d.evolution.selection.CompetitiveFitnessEvaluator;
 import edu.mst.cwd8d.evolution.selection.FitnessEvaluator;
 
 /**
@@ -8,10 +9,10 @@ import edu.mst.cwd8d.evolution.selection.FitnessEvaluator;
  * This class should terminate the simulation after a given number of fitness evaluations
  */
 public class FitnessEvaluationsTerminator<T> implements SimulationTerminator {
-    private final FitnessEvaluator<T> fitnessEvaluator;
+    private final CompetitiveFitnessEvaluator<T> fitnessEvaluator;
     private int maxEvaluations;
 
-    public FitnessEvaluationsTerminator(FitnessEvaluator<T> fitnessEvaluator, int maxEvaluations) {
+    public FitnessEvaluationsTerminator(CompetitiveFitnessEvaluator<T> fitnessEvaluator, int maxEvaluations) {
         this.fitnessEvaluator = fitnessEvaluator;
         this.maxEvaluations = maxEvaluations;
     }

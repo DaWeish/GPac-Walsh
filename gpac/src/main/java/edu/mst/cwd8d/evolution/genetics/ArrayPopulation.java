@@ -14,6 +14,7 @@ public class ArrayPopulation<T> implements  Population<T> {
     private int targetSize;
     private int birthRate;
 
+
     public ArrayPopulation(int targetSize, int birthRate) {
         this.targetSize = targetSize;
         this.birthRate = birthRate;
@@ -33,6 +34,11 @@ public class ArrayPopulation<T> implements  Population<T> {
     @Override
     public boolean contains(Individual<T> individual) {
         return population.contains(individual);
+    }
+
+    @Override
+    public Individual<T> getRandom(Random random) {
+        return population.get(random.nextInt(population.size()));
     }
 
     @Override

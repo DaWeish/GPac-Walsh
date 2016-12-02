@@ -1,8 +1,7 @@
 package edu.mst.cwd8d.ea.geneticprogramming;
 
 import edu.mst.cwd8d.ea.geneticprogramming.function.*;
-import edu.mst.cwd8d.ea.geneticprogramming.terminal.*;
-import edu.mst.cwd8d.ea.gpac.GPac;
+import edu.mst.cwd8d.ea.gpac.evolution.*;
 
 import java.util.Random;
 
@@ -11,7 +10,7 @@ import java.util.Random;
  *
  * This class holds a GP tree for use as a GPac controller
  */
-public class GeneticTree {
+public abstract class GeneticTree {
     private int size;
     private GPacExpressionTreeNode root;
 
@@ -38,7 +37,7 @@ public class GeneticTree {
         getRecursiveCopy(root);
     }
 
-    public static GPacExpressionTreeNode grow(int maxDepth, GPacExpressionTreeNode node, Random random) {
+    public GPacExpressionTreeNode grow(int maxDepth, GPacExpressionTreeNode node, Random random) {
         if (node == null) { // If node is null, create a new root node
             GPacExpressionTreeNode root = getRandomFunctionNode(null, random);
             grow(maxDepth, root, random);
@@ -68,7 +67,7 @@ public class GeneticTree {
      * @param node the parent node to grow
      * @return the new root node of the tree
      */
-    public static GPacExpressionTreeNode full(int maxDepth, GPacExpressionTreeNode node, Random random) {
+    public GPacExpressionTreeNode full(int maxDepth, GPacExpressionTreeNode node, Random random) {
         if (node == null) {
             GPacExpressionTreeNode root = getRandomFunctionNode(null, random);
             full(maxDepth, root, random);
@@ -93,27 +92,9 @@ public class GeneticTree {
         }
     }
 
-    public static GPacExpressionTreeNode getRandomTerminalNode(GPacExpressionTreeNode parent, Random random) {
-        int nodeType = random.nextInt(5);
-        switch(nodeType) {
-            case 0: // Constant node
-                double constant = random.nextDouble() * 100.0;
-                return new ConstantNodeGPac(parent, constant);
-            case 1: // Pacman Num Adjacent Walls
-                return new PacmanNumAdjacentWalls(parent);
-            case 2: // Pacman To Fruit
-                return new PacmanToFruit(parent);
-            case 3: // Pacman to Nearest Ghost
-                return new PacmanToNearestGhost(parent);
-            case 4: // Pacman to Nearest Pill
-                return new PacmanToNearestPill(parent);
-            default:
-                System.out.println("Invalid NodeType in getRandomTerminalNode!");
-                return null;
-        }
-    }
+    public abstract GPacExpressionTreeNode getRandomTerminalNode(GPacExpressionTreeNode parent, Random random);
 
-    public static GPacExpressionTreeNode getRandomFunctionNode(GPacExpressionTreeNode parent, Random random) {
+    public GPacExpressionTreeNode getRandomFunctionNode(GPacExpressionTreeNode parent, Random random) {
         int nodeType = random.nextInt(5);
         switch(nodeType) {
             case 0: // Addition Node
@@ -132,7 +113,7 @@ public class GeneticTree {
         }
     }
 
-    public static GPacExpressionTreeNode getRandomNode(GPacExpressionTreeNode parent, Random random) {
+    public GPacExpressionTreeNode getRandomNode(GPacExpressionTreeNode parent, Random random) {
         // There are currently 5 terminal nodes and 5 function nodes
         if (random.nextBoolean()) {
             return getRandomTerminalNode(parent, random);
@@ -141,7 +122,7 @@ public class GeneticTree {
         }
     }
 
-    public static int sizeOfExpression(GPacExpressionTreeNode root) {
+    public int sizeOfExpression(GPacExpressionTreeNode root) {
         int leftSize = 0, rightSize = 0;
         if (root.getLeft() != null) {
             leftSize = sizeOfExpression(root.getLeft());
@@ -152,7 +133,7 @@ public class GeneticTree {
         return leftSize + rightSize + 1;
     }
 
-    public static GPacExpressionTreeNode getRandomNode(GPacExpressionTreeNode root, double selectionChance, Random random) {
+    public GPacExpressionTreeNode getRandomNode(GPacExpressionTreeNode root, double selectionChance, Random random) {
         if (root.getRight() == null && root.getLeft() == null) return root;
 
         // check to select current node
@@ -170,7 +151,7 @@ public class GeneticTree {
      * sub trees to the left and right
      * @param node current node to duplicate children for
      */
-    public static void getRecursiveCopy(GPacExpressionTreeNode node) {
+    public void getRecursiveCopy(GPacExpressionTreeNode node) {
         if (node == null) return;
 
         if (node.getLeft() != null) {

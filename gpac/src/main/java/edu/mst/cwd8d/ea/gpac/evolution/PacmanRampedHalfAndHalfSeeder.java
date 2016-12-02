@@ -12,11 +12,11 @@ import java.util.Random;
  *
  * This class uses ramped half and half seeding to create a population of genetic trees
  */
-public class RampedHalfAndHalfSeeder implements GeneSeeder<GeneticTree> {
+public class PacmanRampedHalfAndHalfSeeder implements GeneSeeder<GeneticTree> {
     private Random random;
     private int maxDepth;
 
-    public RampedHalfAndHalfSeeder(Random random, int maxDepth) {
+    public PacmanRampedHalfAndHalfSeeder(Random random, int maxDepth) {
         this.random = random;
         this.maxDepth = maxDepth / 2;
     }
@@ -24,7 +24,7 @@ public class RampedHalfAndHalfSeeder implements GeneSeeder<GeneticTree> {
     @Override
     public GeneticTree getGene() {
         int depth = random.nextInt(maxDepth) + maxDepth;
-        return new GeneticTree(random, depth, random.nextBoolean());
+        return new PacmanGeneticTree(random, depth, random.nextBoolean());
     }
 
     @Override

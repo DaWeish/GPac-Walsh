@@ -1,6 +1,7 @@
 package edu.mst.cwd8d.evolution;
 
 import edu.mst.cwd8d.evolution.genetics.*;
+import edu.mst.cwd8d.evolution.selection.CompetitiveFitnessEvaluator;
 import edu.mst.cwd8d.evolution.selection.FitnessEvaluator;
 import edu.mst.cwd8d.evolution.selection.ParentSelector;
 import edu.mst.cwd8d.evolution.selection.SurvivalEvaluator;
@@ -36,8 +37,9 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
     private static Logger outputLog = LoggerFactory.getLogger("output.log");
     private static Logger generalLog = LoggerFactory.getLogger(EvolutionSimulator.class);
 
-    public final FitnessEvaluator<T> trainingFitnessEvaluator;
-    private final GeneSeeder<T> geneSeeder;
+    public final CompetitiveFitnessEvaluator<T> trainingFitnessEvaluator;
+    private final GeneSeeder<T> attackerSeed;
+    private final GeneSeeder<T> defenderSeed;
     private final ParentSelector<T> parentSelector;
     private final GeneRecombinator<T> geneRecombinator;
     private final GeneMutator<T> geneMutator;
@@ -48,18 +50,20 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
 
     private final Random random;
 
-    public CompCoEvolutionSimulator(FitnessEvaluator<T> trainingFitnessEvaluator,
-                              GeneSeeder<T> geneSeeder,
-                              ParentSelector<T> parentSelector,
-                              GeneRecombinator<T> geneRecombinator,
-                              GeneMutator<T> geneMutator,
-                              SurvivalEvaluator<T> survivalEvaluator,
-                              SimulationTerminator simulationTerminator,
-                              Population<T> attackerPopulation,
-                              Population<T> defenderPopulation,
-                              Random random) {
+    public CompCoEvolutionSimulator(CompetitiveFitnessEvaluator<T> trainingFitnessEvaluator,
+                                    GeneSeeder<T> attackerSeed,
+                                    GeneSeeder<T> defenderSeed,
+                                    ParentSelector<T> parentSelector,
+                                    GeneRecombinator<T> geneRecombinator,
+                                    GeneMutator<T> geneMutator,
+                                    SurvivalEvaluator<T> survivalEvaluator,
+                                    SimulationTerminator simulationTerminator,
+                                    Population<T> attackerPopulation,
+                                    Population<T> defenderPopulation,
+                                    Random random) {
         this.trainingFitnessEvaluator = trainingFitnessEvaluator;
-        this.geneSeeder = geneSeeder;
+        this.attackerSeed = attackerSeed;
+        this.defenderSeed = defenderSeed;
         this.parentSelector = parentSelector;
         this.geneRecombinator = geneRecombinator;
         this.geneMutator = geneMutator;
@@ -76,16 +80,23 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
      */
     public Population<T> simulate() {
         trainingFitnessEvaluator.reset();
-        initializePopulation();
+        initializePopulation(attackerPopulation, attackerSeed);
+        initializePopulation(defenderPopulation, defenderSeed);
+
+        updateFitnessValues(attackerPopulation, defenderPopulation, true);
+        updateFitnessValues(defenderPopulation, attackerPopulation, false);
+
         logOutput();
 
         while (!simulationTerminator.terminateSimulation(false)) {
             reproduce(attackerPopulation);
-            reproduce(defenderPopulation);
-            evaluateFitness(attackerPopulation);
-            evaluateFitness(defenderPopulation);
+            updateFitnessValues(attackerPopulation, defenderPopulation, true);
             survivalEvaluator.trimPopulation(attackerPopulation);
+
+            reproduce(defenderPopulation);
+            updateFitnessValues(defenderPopulation, attackerPopulation, false);
             survivalEvaluator.trimPopulation(defenderPopulation);
+
             logOutput();
         }
 
@@ -93,6 +104,35 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
     }
 
     public Population<T> getDefenderPopulation() { return defenderPopulation; }
+
+    /**
+     * Evaluate the given genes against the passed in population
+     * @param individual which genes to evaluate
+     * @param population the population to evaluate against
+     * @return the fitness of the individual compared to the population
+     */
+    private long evaluateFitness(T individual, Population<T> population, boolean isAttacker) {
+        // for every member of each population, evaluate it against roughly 5% of the opposing
+        // population and average the fitness values. Then update the individual's fitness in
+        // the populations.
+        int samplingNumber = (int)(population.size() * 0.05); // test against 5% of the opposing population
+        long fitnessTotal = 0;
+        for (int i = 0; i < samplingNumber; ++i) {
+            T challenger = population.getRandom(random).getGenes();
+            if (isAttacker) {
+                fitnessTotal += trainingFitnessEvaluator.evaluateFitness(individual, challenger).getLeft();
+            } else {
+                fitnessTotal += trainingFitnessEvaluator.evaluateFitness(challenger, individual).getRight();
+            }
+        }
+        return fitnessTotal / samplingNumber;
+    }
+
+    private void updateFitnessValues(Population<T> pop1, Population<T> pop2, boolean isAttacker) {
+        for (Individual<T> individual : pop1) {
+            individual.setFitness(evaluateFitness(individual.getGenes(), pop2, isAttacker));
+        }
+    }
 
     private void logOutput() {
         long averageFitness = attackerPopulation.totalFitness() / attackerPopulation.size();
@@ -132,14 +172,12 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
         }
     }
 
-    private void initializePopulation() {
+    private void initializePopulation(Population<T> population, GeneSeeder<T> geneSeeder) {
         generalLog.info("Initializing Population");
         population.killAll();
         List<T> genes = geneSeeder.getGene(population.targetSize());
         for (T gene : genes) {
-            long fitness = trainingFitnessEvaluator.evaluateFitness(gene);
-            generalLog.info("Initial Fitness value of " + fitness);
-            population.add(new Individual<>(gene, fitness));
+            population.add(new Individual<>(gene, Long.MIN_VALUE));
         }
     }
 }

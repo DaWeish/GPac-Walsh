@@ -4,8 +4,8 @@ import edu.mst.cwd8d.ea.geneticprogramming.GeneticTree;
 import edu.mst.cwd8d.ea.gpac.configuration.GPacConfig;
 import edu.mst.cwd8d.ea.gpac.model.game.GPTreeController;
 import edu.mst.cwd8d.ea.gpac.model.game.GPacGame;
-import edu.mst.cwd8d.ea.gpac.model.game.RandomController;
-import edu.mst.cwd8d.evolution.selection.FitnessEvaluator;
+import edu.mst.cwd8d.ea.gpac.model.game.Pair;
+import edu.mst.cwd8d.evolution.selection.CompetitiveFitnessEvaluator;
 
 import java.util.Random;
 
@@ -14,12 +14,12 @@ import java.util.Random;
  *
  * This class uses the Genetic Programming Tree to implement the Fitness Evaluator Interface
  */
-public class GPacFitnessEvaluator implements FitnessEvaluator<GeneticTree> {
+public class GPacFitnessEvaluator implements CompetitiveFitnessEvaluator<GeneticTree> {
     private GPacGame game;
     private GPTreeController pacmanController;
-    private RandomController ghost1Controller;
-    private RandomController ghost2Controller;
-    private RandomController ghost3Controller;
+    private GPTreeController ghost1Controller;
+    private GPTreeController ghost2Controller;
+    private GPTreeController ghost3Controller;
     private int evaluations;
     private long bestFitness;
     public String bestWorld;
@@ -30,29 +30,32 @@ public class GPacFitnessEvaluator implements FitnessEvaluator<GeneticTree> {
         game = new GPacGame(random, config);
         bestFitness = Long.MIN_VALUE;
         pacmanController = new GPTreeController();
-        ghost1Controller = new RandomController(random);
-        ghost2Controller = new RandomController(random);
-        ghost3Controller = new RandomController(random);
+        ghost1Controller = new GPTreeController();
+        ghost2Controller = ghost1Controller;
+        ghost3Controller = ghost1Controller;
         this.parsimonyPressure = parsimonyPressure;
         evaluations = 0;
     }
 
     @Override
-    public long evaluateFitness(GeneticTree gene) {
-        return evaluateFitness(gene, true);
+    public Pair<Long, Long> evaluateFitness(GeneticTree attackerGene, GeneticTree defenderGene) {
+        return evaluateFitness(attackerGene, defenderGene, true);
     }
 
     @Override
-    public long evaluateFitness(GeneticTree gene, boolean increment) {
+    public Pair<Long, Long> evaluateFitness(GeneticTree attackerGene, GeneticTree defenderGene, boolean increment) {
         if (increment) ++evaluations;
-        pacmanController.setTree(gene);
-        long fitness = game.play(pacmanController, ghost1Controller, ghost2Controller, ghost3Controller);
-        fitness -= Math.ceil(gene.getSize() * parsimonyPressure);
-        if (fitness > bestFitness) {
-            bestFitness = fitness;
+        pacmanController.setTree(attackerGene);
+        ghost1Controller.setTree(defenderGene);
+        long pacmanFitness = game.play(pacmanController, ghost1Controller, ghost2Controller, ghost3Controller);
+        long ghostFitness = -pacmanFitness;
+        pacmanFitness -= Math.ceil(attackerGene.getSize() * parsimonyPressure);
+        ghostFitness -= Math.ceil(defenderGene.getSize() * parsimonyPressure);
+        if (pacmanFitness > bestFitness) {
+            bestFitness = pacmanFitness;
             bestWorld = game.getOutput();
         }
-        return fitness;
+        return new Pair<>(pacmanFitness, ghostFitness);
     }
 
     @Override
@@ -63,5 +66,7 @@ public class GPacFitnessEvaluator implements FitnessEvaluator<GeneticTree> {
     @Override
     public void reset() {
         evaluations = 0;
+        bestWorld = null;
+        bestFitness = Long.MIN_VALUE;
     }
 }

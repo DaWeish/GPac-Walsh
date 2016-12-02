@@ -1,5 +1,7 @@
 package edu.mst.cwd8d.evolution.genetics;
 
+import java.util.Random;
+
 /**
  * @author Connor Walsh (cwd8d)
  * Provides interface for dealing with a population of Genotypes
@@ -13,6 +15,13 @@ public interface Population<T> extends Iterable<Individual<T>> {
      * @return true if exists in population, false otherwise
      */
     boolean contains(Individual<T> individual);
+
+    /**
+     * Gets a random individual from the population using the given random object
+     * @param random random to use
+     * @return the random individual, null if the population is empty
+     */
+    Individual<T> getRandom(Random random);
 
     /**
      * Get the most fit population member
