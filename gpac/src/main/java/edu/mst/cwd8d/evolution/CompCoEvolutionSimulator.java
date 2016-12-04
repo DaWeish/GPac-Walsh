@@ -116,6 +116,7 @@ public class CompCoEvolutionSimulator<T> implements Simulator<T> {
         // population and average the fitness values. Then update the individual's fitness in
         // the populations.
         int samplingNumber = (int)(population.size() * 0.05); // test against 5% of the opposing population
+        if (samplingNumber == 0) samplingNumber = 1;
         long fitnessTotal = 0;
         for (int i = 0; i < samplingNumber; ++i) {
             Individual<T> ind = population.getRandom(random);

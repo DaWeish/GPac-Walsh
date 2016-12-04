@@ -15,11 +15,12 @@ public class Individual<T> implements Comparable<Individual<T>> {
 
     @Override
     public int compareTo(Individual<T> tIndividual) {
-        long compare = (fitness - tIndividual.fitness);
-        if (compare < 0)
+        if (fitness < tIndividual.fitness)
             return -1;
-        else
+        else if (fitness > tIndividual.fitness)
             return 1;
+        else
+            return 0;
     }
 
     public T getGenes() { return genes; }

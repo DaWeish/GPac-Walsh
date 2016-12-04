@@ -1,0 +1,1 @@
+(0.6752508946121649 rand(a,b) ((p2f * (p2p rand(a,b) p2f)) + (p2f rand(a,b) p2g)))
